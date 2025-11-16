@@ -12,7 +12,7 @@ spec:
   source:
     type: Git
     git:
-      uri: https://github.com/ChWasam/spark_eda_k8s.git
+      uri: https://github.com/ChWasam/kwzt_spark
       ref: main
     contextDir: producer
     sourceSecret:

@@ -12,7 +12,7 @@ spec:
   source:
     type: Git
     git:
-      uri: https://github.com/ChWasam/spark_eda_k8s.git # change accordingly
+      uri: https://github.com/ChWasam/kwzt_spark # change accordingly
       ref: main
     contextDir: consumer
     sourceSecret:
