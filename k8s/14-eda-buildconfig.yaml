@@ -1,20 +1,21 @@
 apiVersion: build.openshift.io/v1
 kind: BuildConfig
 metadata:
-  name: kafka-consumer
+  name: pyspark-eda-custom
   labels:
-    app: kafka-consumer
+    app: pyspark-eda
+    component: custom-image
 spec:
   output:
     to:
       kind: ImageStreamTag
-      name: kafka-consumer:latest
+      name: pyspark-eda-custom:latest
   source:
     type: Git
     git:
-      uri: https://github.com/ChWasam/spark_eda_k8s.git # change accordingly
+      uri: https://github.com/ChWasam/spark_eda_k8s.git
       ref: main
-    contextDir: consumer
+    contextDir: eda
     sourceSecret:
       name: mygithub-secret # Replace with your actual secret name if needed
   strategy:
@@ -22,5 +23,6 @@ spec:
     dockerStrategy:
       dockerfilePath: Dockerfile
   triggers:
-  - type: ConfigChange
-  - type: ImageChange
+    - type: ConfigChange
+    - type: ImageChange
+  runPolicy: Serial
