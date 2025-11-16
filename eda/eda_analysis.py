@@ -157,8 +157,8 @@ print(f" Total Transactions : {total_records:,}")
 print(f" Total Revenue      : ${total_revenue:,.2f}")
 print(f" Average Transaction: ${avg_transaction:,.2f}")
 print("="*80)
-print(" EDA Complete! All outputs saved to /data/")
+print("\n✅ EDA Complete! All outputs saved to /data/")
 
 # Cleanup
 spark.stop()
-print("Spark session stopped. Job completed successfully.")
+print("\nSpark session stopped. Job completed successfully.")
