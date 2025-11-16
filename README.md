@@ -158,12 +158,6 @@ mkdir -p plots
    - Analysis results
    - Performance metrics
 
-3. **[CLAUDE.md](CLAUDE.md)** - Project instructions for AI assistants:
-   - Common commands
-   - Configuration details
-   - All errors with commit references
-   - Troubleshooting guide
-
 ### Additional Documentation
 
 - **[k8s/README.md](k8s/README.md)** - Kubernetes resources overview
@@ -390,21 +384,6 @@ oc delete pvc --all
 - **Apache Spark:** https://spark.apache.org/docs/latest/
 - **OpenShift:** https://docs.openshift.com/
 - **Kubernetes:** https://kubernetes.io/docs/
-
----
-
-## License
-
-MIT License - Educational project for DS551 course
-
----
-
-## Contact
-
-**Wasam Chaudhry**
-Boston University
-Email: chwasam@bu.edu
-GitHub: [@ChWasam](https://github.com/ChWasam)
 
 ---
 
