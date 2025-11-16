@@ -90,7 +90,6 @@ oc apply -f k8s/12-eda-job.yaml
 
 # Download results
 mkdir -p plots
-# See docs/COMPLETE_DEPLOYMENT_GUIDE.md for plot download commands
 ```
 
 **Total Time:** ~30-40 minutes (including builds)
@@ -141,31 +140,6 @@ mkdir -p plots
 
 ---
 
-## Documentation
-
-### 🌟 Start Here
-
-1. **[docs/COMPLETE_DEPLOYMENT_GUIDE.md](docs/COMPLETE_DEPLOYMENT_GUIDE.md)** - Complete guide with:
-   - Correct deployment order (5 phases)
-   - All 5 errors encountered & solutions
-   - Step-by-step commands with expected outputs
-   - Verification & testing procedures
-   - Download instructions for plots
-
-2. **[DEPLOYMENT_SUCCESS.md](DEPLOYMENT_SUCCESS.md)** - Quick reference:
-   - Problem statement
-   - Final solution summary
-   - Analysis results
-   - Performance metrics
-
-### Additional Documentation
-
-- **[k8s/README.md](k8s/README.md)** - Kubernetes resources overview
-- **[eda/README.md](eda/README.md)** - Custom PySpark image technical details
-- **[docs/ARCHITECTURE_QA.md](docs/ARCHITECTURE_QA.md)** - Design decisions explained
-- **[docs/BATCH_VS_STREAMING.md](docs/BATCH_VS_STREAMING.md)** - Why batch processing
-
----
 
 ## Key Features & Challenges Solved
 
@@ -245,7 +219,6 @@ javax.security.auth.login.LoginException: NullPointerException: invalid null inp
 ### ERROR 5: Node Selector Pods Pending
 **Fix:** Removed all node selectors
 
-**Full details:** See `docs/COMPLETE_DEPLOYMENT_GUIDE.md`
 
 ---
 
