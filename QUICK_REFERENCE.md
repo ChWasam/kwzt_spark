@@ -219,7 +219,6 @@ oc delete pvc --all
 
 - **Complete Guide:** `docs/COMPLETE_DEPLOYMENT_GUIDE.md` (all errors + solutions)
 - **Success Summary:** `DEPLOYMENT_SUCCESS.md`
-- **Project Docs:** `CLAUDE.md`
 - **Main README:** `README.md`
 - **Kubernetes:** `k8s/README.md`
 - **Custom Image:** `eda/README.md`
