@@ -1,0 +1,26 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: kafka-producer
+  labels:
+    app: kafka-producer
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: kafka-producer:latest
+  source:
+    type: Git
+    git:
+      uri: https://github.com/ChWasam/spark_eda_k8s.git
+      ref: main
+    contextDir: producer
+    sourceSecret:
+      name: mygithub-secret # Replace with your actual secret name if needed
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+  triggers:
+  - type: ConfigChange
+  - type: ImageChange

@@ -1,0 +1,128 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: generate-transaction-data
+  labels:
+    app: data-generator
+spec:
+  template:
+    metadata:
+      labels:
+        app: data-generator
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: data-generator
+        image: python:3.11-slim
+        env:
+        - name: HOME
+          value: /tmp
+        - name: PATH
+          value: /tmp/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+        command: ["/bin/bash", "-c"]
+        args:
+        - |
+          pip install --user --no-cache-dir --quiet --no-warn-script-location faker &&
+          python3 << 'EOF'
+          import csv
+          import random
+          from datetime import datetime, timedelta
+          from pathlib import Path
+
+          NUM_RECORDS = 100_000  # Reduced for faster generation in K8s
+          OUTPUT_FILE = "/data/transactions.csv"
+
+          PRODUCT_CATEGORIES = [
+              "Electronics", "Clothing", "Home & Garden", "Sports & Outdoors",
+              "Books", "Toys & Games", "Health & Beauty", "Food & Beverage",
+              "Automotive", "Office Supplies"
+          ]
+
+          PAYMENT_METHODS = ["Credit Card", "Debit Card", "PayPal", "Apple Pay", "Google Pay"]
+
+          CITIES = [
+              "New York", "Los Angeles", "Chicago", "Houston", "Phoenix",
+              "Philadelphia", "San Antonio", "San Diego", "Dallas", "San Jose",
+              "Austin", "Jacksonville", "Fort Worth", "Columbus", "Indianapolis"
+          ]
+
+          COUNTRIES = ["USA"]
+
+          def generate_timestamp(start_date, end_date):
+              time_delta = end_date - start_date
+              random_seconds = random.randint(0, int(time_delta.total_seconds()))
+              return start_date + timedelta(seconds=random_seconds)
+
+          def generate_transaction():
+              end_date = datetime.now()
+              start_date = end_date - timedelta(days=30)
+              timestamp = generate_timestamp(start_date, end_date)
+
+              transaction_id = f"TXN{random.randint(100000000, 999999999)}"
+              customer_id = f"CUST{random.randint(10000, 99999)}"
+              product_category = random.choice(PRODUCT_CATEGORIES)
+
+              if product_category == "Electronics":
+                  product_price = round(random.uniform(50, 2000), 2)
+              elif product_category == "Clothing":
+                  product_price = round(random.uniform(15, 300), 2)
+              elif product_category == "Books":
+                  product_price = round(random.uniform(5, 50), 2)
+              else:
+                  product_price = round(random.uniform(10, 500), 2)
+
+              quantity = random.randint(1, 5)
+              total_amount = round(product_price * quantity, 2)
+              payment_method = random.choice(PAYMENT_METHODS)
+              city = random.choice(CITIES)
+              country = random.choice(COUNTRIES)
+
+              return {
+                  "timestamp": timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+                  "transaction_id": transaction_id,
+                  "customer_id": customer_id,
+                  "product_category": product_category,
+                  "product_price": product_price,
+                  "quantity": quantity,
+                  "total_amount": total_amount,
+                  "payment_method": payment_method,
+                  "city": city,
+                  "country": country
+              }
+
+          print(f"Generating {NUM_RECORDS:,} transaction records...")
+
+          fieldnames = [
+              "timestamp", "transaction_id", "customer_id", "product_category",
+              "product_price", "quantity", "total_amount", "payment_method",
+              "city", "country"
+          ]
+
+          with open(OUTPUT_FILE, 'w', newline='') as csvfile:
+              writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+              writer.writeheader()
+
+              for i in range(1, NUM_RECORDS + 1):
+                  transaction = generate_transaction()
+                  writer.writerow(transaction)
+
+                  if i % 10_000 == 0:
+                      print(f"Generated {i:,} records...")
+
+          file_size_mb = Path(OUTPUT_FILE).stat().st_size / (1024 * 1024)
+          print(f"Data generation complete! File: {OUTPUT_FILE}, Size: {file_size_mb:.2f} MB")
+          EOF
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        resources:
+          requests:
+            cpu: 250m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: transaction-data-pvc

@@ -1,0 +1,45 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kafka-producer
+  labels:
+    app: kafka-producer
+spec:
+  template:
+    metadata:
+      labels:
+        app: kafka-producer
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: producer
+        image: image-registry.openshift-image-registry.svc:5000/ds551-2025fall-7ae539/kafka-producer:latest # change acccordingly
+        imagePullPolicy: Always
+        env:
+        - name: KAFKA_BROKER
+          value: "kafka:9092"
+        - name: KAFKA_TOPIC
+          value: "transactions"
+        - name: DATA_FILE
+          value: "/data/transactions.csv"
+        - name: BATCH_SIZE
+          value: "5000"
+        - name: BATCH_DELAY
+          value: "10"
+        - name: MAX_BATCHES
+          value: "20"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+          readOnly: true
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: transaction-data-pvc

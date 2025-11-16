@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kafka-consumer
+  labels:
+    app: kafka-consumer
+spec:
+  template:
+    metadata:
+      labels:
+        app: kafka-consumer
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: consumer
+        image: image-registry.openshift-image-registry.svc:5000/ds551-2025fall-7ae539/kafka-consumer:latest # change accordingly
+        imagePullPolicy: Always
+        env:
+        - name: KAFKA_BROKER
+          value: "kafka:9092"
+        - name: KAFKA_TOPIC
+          value: "transactions"
+        - name: KAFKA_GROUP_ID
+          value: "transaction-consumer-group"
+        - name: OUTPUT_FILE
+          value: "/data/received_transactions.csv"
+        - name: MAX_MESSAGES
+          value: "100000"  # Receive all 100K messages (20 batches × 5000 records)
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: transaction-data-pvc
