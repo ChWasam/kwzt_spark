@@ -1,14 +1,3 @@
-# Kafka + PySpark Data Pipeline
-## Distributed Transaction Processing & Analysis on OpenShift
-
-**Course:** DS551 - Data Systems Architecture
-**Institution:** Boston University
-**Semester:** Fall 2025
-**Author:** Wasam Chaudhry
-**GitHub:** https://github.com/ChWasam/spark_eda_k8s.git
-
----
-
 ## Project Overview
 
 This project demonstrates a complete end-to-end data pipeline using Apache Kafka for streaming and Apache PySpark for distributed data analysis, deployed on OpenShift (NERC cluster).
@@ -141,21 +130,12 @@ mkdir -p plots
 │   ├── 13-eda-imagestream.yaml
 │   ├── 14-eda-buildconfig.yaml
 │   └── README.md
-├── docs/                       # Comprehensive documentation
-│   ├── COMPLETE_DEPLOYMENT_GUIDE.md  # ⭐ MAIN GUIDE (all steps + errors)
-│   ├── EXECUTION_GUIDE.md
-│   ├── STEP_BY_STEP_DEPLOYMENT_GUIDE.md
-│   ├── DEPLOYMENT_SUMMARY.md
-│   ├── ARCHITECTURE_QA.md
-│   └── BATCH_VS_STREAMING.md
 ├── plots/                      # Generated visualizations
 │   ├── plot_revenue_by_category.png
 │   ├── plot_payment_methods.png
 │   └── plot_top_cities.png
 ├── generate_data.py            # Data generator script
 ├── docker-compose.yml          # Local development setup
-├── CLAUDE.md                   # ⭐ PROJECT INSTRUCTIONS (for AI assistants)
-├── DEPLOYMENT_SUCCESS.md       # ⭐ SUCCESS SUMMARY
 └── README.md                   # This file
 ```
 
