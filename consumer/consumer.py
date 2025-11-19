@@ -37,7 +37,7 @@ def create_consumer():
             auto_commit_interval_ms=5000,      # Commit every 5 seconds
             value_deserializer=lambda m: json.loads(m.decode('utf-8')),
             key_deserializer=lambda k: k.decode('utf-8') if k else None,
-            consumer_timeout_ms=60000,         # Wait up to 60 seconds between messages
+            consumer_timeout_ms=300000,        # Wait up to 5 minutes between messages
         )
 
         print(f" Successfully connected to Kafka!")
@@ -90,8 +90,8 @@ def consume_messages():
                     writer.writerow(record)
                     message_count += 1
 
-                    # Log progress every 10,000 messages
-                    if message_count % 10000 == 0:
+                    # Log progress every 50,000 messages (matches producer batch size)
+                    if message_count % 50000 == 0:
                         batch_count += 1
                         print(f"Batch #{batch_count}: Received {message_count:,} messages so far...")
 

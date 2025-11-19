@@ -41,8 +41,9 @@ services:
       KAFKA_BROKER: kafka:9092
       KAFKA_TOPIC: transactions
       DATA_FILE: /data/transactions.csv
-      BATCH_SIZE: 10000        # Send 10k records at a time
+      BATCH_SIZE: 50000        # Send 50k records at a time
       BATCH_DELAY: 5           # Wait 5 seconds between batches
+      MAX_BATCHES: 20          # Send 20 batches (20 × 50k = 1M records)
     volumes:
       - ./data:/data:ro        # Mount data folder as read-only
     networks:

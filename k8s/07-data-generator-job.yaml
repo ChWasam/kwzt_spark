@@ -29,7 +29,7 @@ spec:
           from datetime import datetime, timedelta
           from pathlib import Path
 
-          NUM_RECORDS = 100_000  # Reduced for faster generation in K8s
+          NUM_RECORDS = 1_000_000  # Generate 1 million records for full dataset
           OUTPUT_FILE = "/data/transactions.csv"
 
           PRODUCT_CATEGORIES = [

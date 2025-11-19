@@ -10,7 +10,7 @@ from kafka.errors import KafkaError
 KAFKA_BROKER = os.getenv('KAFKA_BROKER', 'localhost:9092')
 KAFKA_TOPIC = os.getenv('KAFKA_TOPIC', 'transactions')
 DATA_FILE = os.getenv('DATA_FILE', '/data/transactions.csv')
-BATCH_SIZE = int(os.getenv('BATCH_SIZE', 10000))
+BATCH_SIZE = int(os.getenv('BATCH_SIZE', 50000))
 BATCH_DELAY = int(os.getenv('BATCH_DELAY', 5))
 MAX_BATCHES = int(os.getenv('MAX_BATCHES', 0))  # 0 = no limit (process all data)
 
@@ -144,6 +144,13 @@ def stream_data():
         print(f" Total errors: {total_errors:,}")
         print(f" Topic: {KAFKA_TOPIC}")
         print("=" * 80)
+
+        # For Deployment: Keep pod alive after completion (prevent restart and re-send)
+        if MAX_BATCHES > 0:
+            print("\n Entering sleep mode to keep Deployment pod alive...")
+            print("(Pod will stay running but idle - scale down when done)")
+            while True:
+                time.sleep(3600)  # Sleep forever in 1-hour intervals
 
     except KeyboardInterrupt:
         print("\n  Streaming interrupted by user")

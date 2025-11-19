@@ -1,16 +1,32 @@
-apiVersion: batch/v1
-kind: Job
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: kafka-producer
   labels:
     app: kafka-producer
 spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-producer
+  strategy:
+    type: Recreate  # Prevent duplicate sends during updates
   template:
     metadata:
       labels:
         app: kafka-producer
     spec:
-      restartPolicy: Never
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - kafka-producer
+                - kafka-consumer
+            topologyKey: kubernetes.io/hostname
       containers:
       - name: producer
         image: image-registry.openshift-image-registry.svc:5000/ds551-2025fall-7ae539/kafka-producer:latest # change acccordingly
@@ -23,7 +39,7 @@ spec:
         - name: DATA_FILE
           value: "/data/transactions.csv"
         - name: BATCH_SIZE
-          value: "5000"
+          value: "50000"
         - name: BATCH_DELAY
           value: "10"
         - name: MAX_BATCHES

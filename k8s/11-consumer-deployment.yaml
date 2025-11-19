@@ -1,16 +1,32 @@
-apiVersion: batch/v1
-kind: Job
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: kafka-consumer
   labels:
     app: kafka-consumer
 spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-consumer
+  strategy:
+    type: Recreate  # Ensure clean restarts
   template:
     metadata:
       labels:
         app: kafka-consumer
     spec:
-      restartPolicy: Never
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - kafka-producer
+                - kafka-consumer
+            topologyKey: kubernetes.io/hostname
       containers:
       - name: consumer
         image: image-registry.openshift-image-registry.svc:5000/ds551-2025fall-7ae539/kafka-consumer:latest # change accordingly
@@ -24,8 +40,7 @@ spec:
           value: "transaction-consumer-group"
         - name: OUTPUT_FILE
           value: "/data/received_transactions.csv"
-        - name: MAX_MESSAGES
-          value: "100000"  # Receive all 100K messages (20 batches × 5000 records)
+        # MAX_MESSAGES removed - defaults to 0 (continuous mode)
         volumeMounts:
         - name: data
           mountPath: /data
