@@ -68,10 +68,22 @@ def consume_messages():
     batch_count = 0
 
     try:
-        # Open CSV file for writing
-        with open(OUTPUT_FILE, 'w', newline='') as csvfile:
+        # Check if file exists and has content
+        file_exists = os.path.exists(OUTPUT_FILE) and os.path.getsize(OUTPUT_FILE) > 0
+
+        if file_exists:
+            print(f" File exists with data - appending to existing file")
+        else:
+            print(f" Creating new file")
+
+        # Open CSV file in append mode to preserve data across restarts
+        with open(OUTPUT_FILE, 'a', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            writer.writeheader()
+
+            # Only write header if file is new or empty
+            if not file_exists:
+                writer.writeheader()
+                print(f" CSV header written")
 
             print("\n Listening for messages...")
             if MAX_MESSAGES > 0:
@@ -88,6 +100,7 @@ def consume_messages():
 
                     # Write to CSV
                     writer.writerow(record)
+                    csvfile.flush()  # Force write to disk immediately
                     message_count += 1
 
                     # Log progress every 50,000 messages (matches producer batch size)
